@@ -154,14 +154,13 @@ module.exports = babelLoader.custom(babel => {
         }
       ]
 
-      // TODO: Not sure what's the right phase to use here!
-      const { babel: babelHook } = loadConfig(
+      const { babel: babelConfig } = loadConfig(
+        // TODO: Not sure what's the right phase to use here!
         PHASE_PRODUCTION_BUILD,
         options.cwd
       )
-
-      if (babelHook && typeof babelHook === 'function') {
-        return babelHook({
+      if (babelConfig && typeof babelConfig === 'function') {
+        return babelConfig({
           babelConfig: options,
           options: {
             isServer
