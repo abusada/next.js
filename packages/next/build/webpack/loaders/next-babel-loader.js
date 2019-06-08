@@ -1,6 +1,8 @@
 import hash from 'string-hash'
 import { join, basename } from 'path'
 import babelLoader from 'babel-loader'
+import loadConfig from 'next-server/next-config'
+import { PHASE_PRODUCTION_BUILD } from 'next-server/constants'
 
 // increment 'c' to invalidate cache
 const cacheKey = 'babel-cache-' + 'c' + '-'
@@ -151,6 +153,21 @@ module.exports = babelLoader.custom(babel => {
           plugins: [commonJsItem]
         }
       ]
+
+      // TODO: Not sure what's the right phase to use here!
+      const { babel: babelHook } = loadConfig(
+        PHASE_PRODUCTION_BUILD,
+        options.cwd
+      )
+
+      if (babelHook && typeof babelHook === 'function') {
+        return babelHook({
+          babelConfig: options,
+          options: {
+            isServer
+          }
+        })
+      }
 
       return options
     }
